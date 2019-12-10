@@ -27,4 +27,5 @@ for r in range(1, 331, 50):
         #Join the single player's stats with the overall dataset
         final_df = pd.concat([final_df, temp_df], ignore_index =True)
 
-final_df
+
+print(final_df)
