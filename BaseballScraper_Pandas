@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 #Looping through each page to capture all 331 players who were active in 2018, 50 players at a time
 #Pull in website code
 
-for r in range(1, 331, 0):
+for r in range(1, 331, 50):
     url = 'http://www.espn.com/mlb/history/leaders/_/breakdown/season/year/2018/start/{}'.format(r)
     pages = requests.get(url)
     soupytwist = BeautifulSoup(pages.text, 'html.parser')
