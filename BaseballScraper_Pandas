@@ -1,0 +1,30 @@
+import pandas as pd
+import re
+import requests
+from bs4 import BeautifulSoup
+#Looping through each page to capture all 331 players who were active in 2018, 50 players at a time
+#Pull in website code
+
+for r in range(1, 331, 0):
+    url = 'http://www.espn.com/mlb/history/leaders/_/breakdown/season/year/2018/start/{}'.format(r)
+    pages = requests.get(url)
+    soupytwist = BeautifulSoup(pages.text, 'html.parser')
+
+    #Identifies all player rows
+    #Pulls all records of players/ pulls in player rows
+    attrs = {'attribute1_name': 'attribute1_value', 'attribute2_name': 'attribute2_value'}
+    header = soupytwist.find('tr', attrs={'class': 'colhead'})
+    columns = [col.get_text() for col in header.find_all('td')]
+    final_df = pd.DataFrame(columns=columns)
+
+    players = soupytwist.find_all('tr', attrs ={'class':re.compile('row player-10-')})
+    for player in players:
+        #Gets the stats for each player using the get_text() function extracting data from the 'td' elements (data cells) in the HTML
+        stats = [stat.get_text() for stat in player.find_all('td')]
+        #Create a dataframe for the players stats
+        temp_df = pd.DataFrame(stats).transpose()
+        temp_df.columns = columns
+        #Join the single player's stats with the overall dataset
+        final_df = pd.concat([final_df, temp_df], ignore_index =True)
+
+final_df
